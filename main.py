@@ -17,16 +17,23 @@ def seq_dict(seq_file, from_url=None):
         soup = BeautifulSoup(html, features='html.parser')
         for script in soup(['script', 'style']):
             script.extract()
-        seq_file = soup.get_text()
+        f = soup.get_text().split('\n')
+        seq_name = f[0].strip('>')
+        seq_dict[seq_name] = ''.join(f[1:])
     # open seq_file, parse thru each line for name and sequence key:value pairs
-    with open(seq_file, 'r') as f:
+    else:
+        f = open(seq_file, 'r')
         for line in f:
             if line.startswith('>'):
                 if seq_name:
                     seq_dict[seq_name] = ''.join(seq_list)
                     del seq_list[:]
-                seq_name = line.strip().split('>')[1]
+                seq_name = line.strip('\n').split('>')[1]
             else:
                 seq_list.append(line.strip())
         seq_dict[seq_name] = ''.join(seq_list)
     return seq_dict
+
+if __name__ == "__main__":
+    print(seq_dict("https://rest.uniprot.org/uniprotkb/P04233.fasta", from_url=True))
+    print(seq_dict("/Users/jakeharris/Desktop/fastaex.txt"))
