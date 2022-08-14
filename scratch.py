@@ -1,6 +1,6 @@
 from doctest import OutputChecker
 from Bio import Entrez, SeqIO
-from Bio.Seq import translate
+from Bio.Seq import translate, Seq
 import numpy as np
 Entrez.email = 'jakec.harris@gmail.com'
 # handle = Entrez.esearch(db='nucleotide', term='"Dascyllus"[Organism] AND ("2000/04/06"[PDAT] : "2011/03/22"[PDAT])')
@@ -60,10 +60,21 @@ def prot_translate(dna_file):
     # print(dna.find('ATG'))
     print(len(translate(dna)), len(prot))
 
-    
+def rev_comp(dna_file):
+    records = list(SeqIO.parse(dna_file, 'fasta'))
+    rc_matches = 0
+    for record in records:
+        seq = record.seq
+        print(record.id, seq, seq.reverse_complement())
+        if seq == seq.reverse_complement():
+            rc_matches += 1
+    print(rc_matches)
+
+
 
 if __name__ == "__main__":
     # shortest(["FJ817486", "JX069768", "JX469983"])
     # shortest(['NM_001081821 JX445144 NM_001079732 NM_214399 NM_001185098 JX469983 JX308813 JX472277 JF927157'])
     # phred('/Users/jakeharris/Downloads/rosalind_phre.txt')
-    prot_translate('/Users/jakeharris/Downloads/rosalind_ptra (1).txt')
+    # prot_translate('/Users/jakeharris/Downloads/rosalind_ptra (1).txt')
+    rev_comp('/Users/jakeharris/Downloads/rosalind_rvco.txt')
